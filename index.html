@@ -35,7 +35,8 @@ let player,enemy;
 let region='village',licensed=false,ambientNotice='',noticeUntil=0;
 let swordOwned=false,cutscene=null;
 const swordStone={x:495,y:205};
-const platforms=[{x:175,y:380,w:100},{x:430,y:344,w:100},{x:685,y:380,w:100}];
+const platforms=[{x:175,y:380,w:100},{x:685,y:380,w:100}];
+const SWORD_SCENE_SECONDS=10;
 const FIGHT_GROUND=440,FIGHT_RADIUS=18,JUMP_SPEED=480;
 
 const gate={x:480,y:112};
@@ -299,15 +300,15 @@ function startSwordCutscene(){
 function setCutsceneCaption(text){if(cutscene.caption!==text){cutscene.caption=text;document.querySelector('#cutscene-caption').textContent=text}}
 function updateSwordCutscene(dt){
  cutscene.elapsed+=dt;const t=cutscene.elapsed;
- const walk=clamp(t/1.25,0,1),ease=walk*walk*(3-2*walk);
- hero.x=cutscene.startX+(swordStone.x-cutscene.startX)*ease;
- hero.y=cutscene.startY+(swordStone.y+14-cutscene.startY)*ease;
- if(t<1.25)setCutsceneCaption('The forest grows still. A light stirs inside the stone.');
- else if(t<3)setCutsceneCaption('You grip the hilt. The roots hold fast…');
- else if(t<4.2)setCutsceneCaption('One last pull — and the ancient seal breaks.');
- else setCutsceneCaption('Mosslight answers. The woods remember their champion.');
- if(t>=3&&t<4.2)shake=2;
- if(t>=6.6)finishSwordCutscene();
+ // Freeze overworld position while the camera takes the traveler's point of view.
+ hero.x=swordStone.x;hero.y=swordStone.y+45;
+ if(t<1.5)setCutsceneCaption('Through your eyes: an ancient blade waits beneath the canopy.');
+ else if(t<3.3)setCutsceneCaption('Your hands close around the worn leather hilt.');
+ else if(t<5.2)setCutsceneCaption('The stone resists. Light begins to stir beneath your fingers.');
+ else if(t<6.4)setCutsceneCaption('You pull. The seal breaks — and Mosslight comes free.');
+ else if(t<7.5)setCutsceneCaption('You raise the blade toward a break in the canopy.');
+ else setCutsceneCaption('Sunlight runs along the silver. The forest has remembered you.');
+ if(t>=SWORD_SCENE_SECONDS)finishSwordCutscene();
 }
 function finishSwordCutscene(){
  if(mode!=='cutscene'||modal)return;
@@ -340,24 +341,95 @@ function drawSwordStone(){
   if(mode!=='cutscene')drawBlade(x,y-49,.75);
  }
 }
-function drawSwordCutscene(){
- const t=cutscene.elapsed,{x,y}=swordStone;
- ctx.save();ctx.translate(480,270);ctx.scale(1.3,1.3);ctx.translate(-x,-(y+6));drawForest();
- const strain=t>1.25&&t<3?Math.sin(t*27)*1.3:0;
- const lift=clamp((t-3)/1.2,0,1),poseY=hero.y-lift*12;
- littlePerson(hero.x+strain,poseY,'#9ed5c2',false,t<1.25);
- if(t>=1.25){
-  const celebration=clamp((t-4.2)/.35,0,1);
-  const gripY=y-49-lift*20+(poseY-65-(y-69))*celebration;
-  path([[hero.x-14,poseY-30],[hero.x-20,poseY-54],[x-5+strain,gripY+4]],5,'#d9b68b');
-  path([[hero.x+14,poseY-30],[hero.x+20,poseY-54],[x+5+strain,gripY+4]],5,'#d9b68b');
-  drawBlade(x+strain,gripY,.75,clamp((t-4.05)/.4,0,1)*Math.PI);
- }else drawBlade(x,y-49,.75);
-
- if(t>2){const glow=clamp((t-2)/2,0,1);for(let i=0;i<24;i++){const a=i*Math.PI*2/24+t*.3,r=20+((t*35+i*7)%100);circle(x+Math.cos(a)*r,y-40+Math.sin(a)*r*.7,1.5,'#e8edb5'+Math.round(glow*180).toString(16).padStart(2,'0'))}}
- ctx.restore();rect(0,0,960,22,'#0c1d18');rect(0,518,960,22,'#0c1d18');
- if(t>=3&&t<3.35){ctx.fillStyle=`rgba(255,242,187,${(1-(t-3)/.35)*.35})`;ctx.fillRect(0,0,960,540)}
+function smoothStep(a,b,t){const p=clamp((t-a)/(b-a),0,1);return p*p*(3-2*p)}
+function polygon(points,color){ctx.fillStyle=color;ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill()}
+function sceneBackdrop(t,tilt){
+ const sky=ctx.createLinearGradient(0,0,0,540);sky.addColorStop(0,'#7eaa9d');sky.addColorStop(.4,'#a9bca0');sky.addColorStop(1,'#234b38');ctx.fillStyle=sky;ctx.fillRect(0,0,960,540);
+ const sunX=745,sunY=87+tilt*40;
+ const sun=ctx.createRadialGradient(sunX,sunY,3,sunX,sunY,230);sun.addColorStop(0,'#fffbe8');sun.addColorStop(.12,'#fff3bdcc');sun.addColorStop(1,'#eed29700');ctx.fillStyle=sun;ctx.fillRect(420,0,540,440);
+ // Trees at different distances frame a small break in the canopy.
+ for(let i=0;i<14;i++){
+  const x=(i*173+20)%960,far=i%3===0,w=far?22:38;
+  rect(x,25+tilt*28,w,520,far?'#436657':'#294d3d');rect(x+4,30+tilt*28,5,510,'#85916b33');
+  path([[x+w/2,150+tilt*30],[x-65,60+tilt*30]],far?8:14,'#385a43');
+  if(x<610||x>825){ellipse(x,26+tilt*50,95,67,'#214a35');ellipse(x+25,5+tilt*50,90,55,'#38613d');ellipse(x-30,45+tilt*50,70,35,'#4b7545')}
+ }
+ polygon([[0,420+tilt*80],[250,352+tilt*100],[510,381+tilt*100],[960,403+tilt*80],[960,540],[0,540]],'#345a3c');
+ for(let i=0;i<38;i++){const x=(i*137+21)%960,y=413+(i*41)%125+tilt*50;path([[x,y+15],[x-7,y],[x+4,y+5],[x+10,y-7]],2,'#638153')}
+ ctx.save();ctx.globalCompositeOperation='screen';
+ for(let i=0;i<5;i++){const a=.025+Math.sin(t*.4+i)*.009;polygon([[sunX-18+i*7,sunY-30],[sunX+15+i*7,sunY],[110+i*140,570],[30+i*120,570]],`rgba(255,234,167,${a})`)}
+ ctx.restore();
+ for(let i=0;i<34;i++){const x=(i*113+Math.sin(t*.45+i)*18)%960,y=(i*67+t*(4+i%3))%540;circle(x,y,i%3===0?1.8:.9,'#f6e5b977')}
 }
+function sceneStone(yOffset,glow){
+ ctx.save();ctx.translate(0,yOffset);
+ ellipse(480,461,214,43,'#112e2880');
+ const rock=ctx.createLinearGradient(300,280,600,500);rock.addColorStop(0,'#a0ad99');rock.addColorStop(.45,'#728a7b');rock.addColorStop(1,'#394f48');
+ polygon([[279,400],[332,319],[437,284],[556,292],[632,348],[664,434],[577,485],[361,478]],rock);
+ polygon([[332,319],[437,284],[556,292],[599,333],[479,358],[370,350]],'#b6c0a4');
+ polygon([[479,358],[599,333],[632,348],[664,434],[577,485],[537,410]],'#617c6b');
+ path([[465,308],[481,327],[470,344],[494,364],[482,398]],4,'#304a42');
+ path([[480,329],[444,345],[427,365]],3,'#435e50');
+ path([[479,330],[508,318],[535,327]],3,'#526c5c');
+ ellipse(479,313,13,5,'#2c453b');
+ for(let i=0;i<14;i++){const x=310+i*23,y=421+Math.sin(i*1.9)*21;ellipse(x,y,16,7,i%2?'#728b4c':'#89a361')}
+ for(let i=0;i<6;i++){const x=367+i*38,y=381+Math.sin(i*.7)*18;path([[x,y],[x+6,y-12],[x+12,y],[x+4,y+3]],2,`rgba(210,236,172,${.12+glow*.8})`)}
+ ctx.restore();
+}
+function sceneSword(x,y,angle,shine,t){
+ ctx.save();ctx.translate(x,y);ctx.rotate(angle);
+ // A full-size blade, seen directly in front of the traveler.
+ const steel=ctx.createLinearGradient(-22,0,22,0);steel.addColorStop(0,'#729990');steel.addColorStop(.43,'#e2eee0');steel.addColorStop(.5,'#fffce6');steel.addColorStop(.58,'#a4c8be');steel.addColorStop(1,'#507c78');
+ if(shine>0){ctx.save();ctx.shadowColor='#fff4c0';ctx.shadowBlur=22*shine;polygon([[-19,40],[-20,233],[0,272],[20,233],[19,40]],steel);ctx.restore()}
+ polygon([[-19,40],[-20,233],[0,272],[20,233],[19,40]],steel);
+ path([[0,48],[0,247]],2,'#6eaba2');
+ for(let i=0;i<4;i++){const yy=75+i*34;path([[-6,yy],[0,yy+7],[6,yy],[0,yy+15]],1,`rgba(240,251,208,${.3+shine*.65})`)}
+ const gold=ctx.createLinearGradient(-55,0,55,20);gold.addColorStop(0,'#9e793b');gold.addColorStop(.5,'#f4df9c');gold.addColorStop(1,'#9b843f');
+ polygon([[-62,27],[-50,18],[-22,27],[22,27],[50,18],[62,27],[54,39],[19,36],[-19,36],[-54,39]],gold);
+ rect(-11,-30,22,58,'#344a42');rect(-8,-29,5,55,'#73866b');
+ for(let i=0;i<7;i++)path([[-10,-26+i*8],[10,-18+i*8]],2,'#b7b78a');
+ circle(0,-40,15,'#bdac69');circle(0,-40,10,'#4c9c87');circle(-3,-44,3,'#d9f6cb');
+ if(shine>0){
+  const sweep=55+((t-7.5)*90)%195;
+  ctx.save();ctx.globalCompositeOperation='screen';path([[-19,sweep-9],[19,sweep+9]],8,`rgba(255,250,212,${shine*.8})`);ctx.restore();
+  const glintY=210+Math.sin(t)*15;const size=10+Math.sin(t*3)*3;
+  polygon([[0,glintY-size*2],[3,glintY-3],[size,glintY],[3,glintY+3],[0,glintY+size*2],[-3,glintY+3],[-size,glintY],[-3,glintY-3]],'#fff9d8');
+ }
+ ctx.restore();
+}
+function sceneHand(side,x,y,reveal){
+ const startX=side<0?-100:1060,hx=startX+(x-startX)*reveal,hy=630+(y-630)*reveal;
+ const baseX=side<0?120:880,baseY=605;
+ const dx=baseX-hx,dy=baseY-hy,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;
+ const cuffX=hx+dx*.22,cuffY=hy+dy*.22;
+ polygon([[baseX-65,baseY],[baseX+65,baseY],[cuffX+nx*26,cuffY+ny*26],[cuffX-nx*26,cuffY-ny*26]],side<0?'#508779':'#396e65');
+ path([[cuffX-nx*27,cuffY-ny*27],[cuffX+nx*27,cuffY+ny*27]],8,'#a7c3a0');
+ polygon([[cuffX+nx*23,cuffY+ny*23],[hx+nx*18,hy+ny*18],[hx-nx*18,hy-ny*18],[cuffX-nx*23,cuffY-ny*23]],'#bc8d62');
+ ellipse(hx,hy,21,28,side<0?'#ddb085':'#c99d72');
+ for(let i=0;i<3;i++)path([[hx-12,hy-10+i*9],[hx+10,hy-8+i*9]],2,'#a77653');
+ ellipse(hx-side*11,hy+12,9,16,'#e1b78c');
+}
+function drawSwordCutscene(){
+ const t=cutscene.elapsed,approach=smoothStep(0,1.5,t),pull=smoothStep(5.2,6.3,t),raise=smoothStep(6.4,7.5,t),sun=smoothStep(7.5,8.3,t);
+ sceneBackdrop(t,raise);
+ // Camera leans toward the stone, then follows the blade up into the sunlight.
+ ctx.save();ctx.translate(480,270);ctx.scale(.88+approach*.12,.88+approach*.12);ctx.translate(-480,-270);
+ const strain=t>3.3&&t<5.2?Math.sin(t*34)*1.6:0;
+ const hiltX=480+raise*100+strain,hiltY=147-pull*85+raise*338;
+ const angle=raise*(Math.PI-.17);
+ sceneSword(hiltX,hiltY,angle,sun,t);
+ sceneStone(pull*90+raise*220,smoothStep(3.3,5.2,t)*(1-raise));
+ const hands=smoothStep(1.5,2.7,t);
+ // As the blade turns upright, both hands follow its leather grip.
+ sceneHand(-1,hiltX-17,hiltY+6,hands);
+ sceneHand(1,hiltX+17,hiltY+17,hands);
+ if(t>5.2&&t<6.5){const strength=Math.sin(clamp((t-5.2)/1.3,0,1)*Math.PI);ctx.save();ctx.globalCompositeOperation='screen';for(let i=0;i<24;i++){const a=i*2.4,r=(t-5.2)*110+(i%4)*15;circle(480+Math.cos(a)*r,330+Math.sin(a)*r*.5,1.8,`rgba(235,245,176,${strength*.8})`)}ctx.restore()}
+ ctx.restore();
+ const vignette=ctx.createRadialGradient(480,260,140,480,260,560);vignette.addColorStop(0,'#071b1400');vignette.addColorStop(1,'#071b14bb');ctx.fillStyle=vignette;ctx.fillRect(0,0,960,540);
+ const fade=1-smoothStep(0,.55,t)+smoothStep(9.65,10,t);if(fade>0){ctx.fillStyle=`rgba(12,29,24,${clamp(fade,0,1)})`;ctx.fillRect(0,0,960,540)}
+ rect(0,0,960,22,'#0c1d18');rect(0,518,960,22,'#0c1d18');
+}
+
 function drawCrate(p){
  const h=FIGHT_GROUND-p.y;
  ellipse(p.x+p.w/2,445,p.w*.58,9,'#18362c55');rect(p.x,p.y,p.w,h,'#75553c');
