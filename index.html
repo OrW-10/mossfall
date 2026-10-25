@@ -9,16 +9,18 @@
 
 .bottom-actions{display:flex;gap:8px;flex-shrink:0}.license-button{border-color:#b8995e;color:#f0d598}button:disabled{opacity:.45;cursor:default}.license-card{margin:18px 0;padding:20px;border:1px solid #baad75;border-radius:8px;background:repeating-linear-gradient(135deg,#e9dfbb,#e9dfbb 8px,#e6dcb8 8px,#e6dcb8 9px);color:#304731;position:relative}.license-card[hidden]{display:none}.license-card .seal{float:right;border:2px solid #58754f;border-radius:50%;padding:10px;font:27px Georgia,serif}.license-card small{display:block;letter-spacing:2px;font-size:9px}.license-card strong{display:block;font:27px Georgia,serif;margin:10px 0}.license-card p{color:#3b5139;margin:4px 0;font-size:12px}.license-card .signature{border-top:1px solid #8d9c71;margin-top:15px;padding-top:8px;font-style:italic}@media(max-width:650px){.bottom{flex-wrap:wrap}.bottom-actions{width:100%}.bottom-actions button{flex:1}.overlay{padding:10px;align-items:center}.panel{max-height:100%;overflow:auto}.license-card{padding:14px}.license-card strong{font-size:23px}}
 @media(max-width:650px){.overlay{position:fixed;inset:0;z-index:20;padding:16px;background:#091810e8}.overlay .panel{max-height:calc(100dvh - 32px)}}
+.cinematic{position:absolute;z-index:2;left:20px;right:20px;bottom:100px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;background:#11251ded;border:1px solid #bba66c;border-radius:8px}.cinematic[hidden]{display:none}.cinematic p{margin:0;color:#efdfb8;font:16px/1.5 Georgia,serif}.cinematic button{flex-shrink:0;font-size:12px}.overlay{z-index:5}.bottom-actions{flex-wrap:wrap}.sword-button{color:#c8e6db;border-color:#7aa696}@media(max-width:650px){.cinematic{left:10px;right:10px;bottom:132px;padding:10px;gap:8px}.cinematic p{font-size:13px}.cinematic button{padding:7px}.bottom-actions{flex-wrap:wrap}}
 </style>
 </head>
 <body><main>
 <header><div><div class="eyebrow">A tiny browser adventure</div><h1>Mossfall</h1><p>The Guardian’s Trial · Beyond the clearing</p></div><span class="badge">Single player · Fully offline</span></header>
 <div class="frame"><div class="topline"><span id="location">01 / THE VILLAGE CLEARING</span><span id="quest">Find Rowan, the guardian</span></div>
-<canvas id="game" width="960" height="540" tabindex="0" aria-label="Mossfall game. Move with WASD or arrows, E to interact and I to view your earned license. In combat J attacks, K uses a heavy attack, L blocks, and Space jumps."></canvas>
+<canvas id="game" width="960" height="540" tabindex="0" aria-label="Mossfall game. Jump onto the arena crates during duels. Discover the sword in the forest. Move with WASD or arrows, E to interact and I to view your earned license. In combat J attacks, K uses a heavy attack, L blocks, and Space jumps."></canvas>
+<div id="cinematic" class="cinematic" hidden><p id="cutscene-caption" role="status" aria-live="polite"></p><button id="skip-cutscene" type="button">Skip cutscene</button></div>
 <div id="overlay" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="panel"><div class="eyebrow" id="dialog-label">The guardian</div><h2 id="dialog-title"></h2><p id="dialog-text"></p><div id="license-card" class="license-card" hidden><span class="seal" aria-hidden="true">❧</span><small>MOSSFALL RANGERS GUILD</small><strong>Forest Venture License</strong><p>Bearer: The Traveler · Permit MF-001</p><p>Access granted to the Whispering Woods.</p><p class="signature">Rowan, Guardian of the Clearing · APPROVED</p></div><div id="dialog-actions" class="actions"></div></div></div>
-<div class="bottom"><p id="hint" role="status" aria-live="polite">Walk toward Rowan by the stone circle. Press E to speak.</p><div class="bottom-actions"><button id="license" class="license-button" type="button" disabled>License locked</button><button id="pause" type="button">Pause</button></div></div></div>
+<div class="bottom"><p id="hint" role="status" aria-live="polite">Walk toward Rowan by the stone circle. Press E to speak.</p><div class="bottom-actions"><button id="sword-inventory" class="sword-button" type="button" hidden>Mosslight sword</button><button id="license" class="license-button" type="button" disabled>License locked</button><button id="pause" type="button">Pause</button></div></div></div>
 <div class="touch" aria-label="Game controls"><div class="touch-group"><button data-key="a" aria-label="Move left">←</button><button data-key="w" aria-label="Move up">↑</button><button data-key="s" aria-label="Move down">↓</button><button data-key="d" aria-label="Move right">→</button></div><div class="touch-group"><button data-key="e">Talk</button><button data-key=" " aria-label="Jump">Jump</button><button class="attack" data-key="j">Hit</button><button class="attack" data-key="k">Heavy</button><button data-key="l">Block</button></div></div>
-<div class="controls"><div><h3>01 / EXPLORE</h3><p><kbd>W A S D</kbd> or arrows to move<br><kbd>E</kbd> interact · <kbd>I</kbd> license</p></div><div><h3>02 / DUEL</h3><p><kbd>A D</kbd> move · <kbd>Space</kbd> jump<br><kbd>J</kbd> strike · <kbd>K</kbd> heavy · hold <kbd>L</kbd> guard</p></div><div><h3>A guardian’s advice</h3><p>Gold means a heavy strike is coming. Guard or jump, then punish the recovery. Keep an eye on your stamina. <kbd>Esc</kbd> pauses.</p></div></div>
+<div class="controls"><div><h3>01 / EXPLORE</h3><p><kbd>W A S D</kbd> or arrows to move<br><kbd>E</kbd> interact · <kbd>I</kbd> license</p></div><div><h3>02 / DUEL</h3><p><kbd>A D</kbd> move · <kbd>Space</kbd> jump onto boxes<br><kbd>J</kbd> strike · <kbd>K</kbd> heavy · hold <kbd>L</kbd> guard</p></div><div><h3>A guardian’s advice</h3><p>Gold means a heavy strike is coming. Guard or jump, then punish the recovery. Keep an eye on your stamina. <kbd>Esc</kbd> pauses.</p></div></div>
 <div class="footer"><span>Hand-drawn with code. No downloads, accounts, or connections.</span><span>Progress lasts for this visit · Refresh to start fresh</span></div>
 </main>
 <script>
@@ -31,6 +33,11 @@ const hero={x:365,y:385},npc={x:615,y:248};
 const obstacles=[{x:105,y:148,w:165,h:110},{x:743,y:155,w:135,h:95},{x:58,y:337,w:105,h:75},{x:790,y:350,w:95,h:75}];
 let player,enemy;
 let region='village',licensed=false,ambientNotice='',noticeUntil=0;
+let swordOwned=false,cutscene=null;
+const swordStone={x:495,y:205};
+const platforms=[{x:175,y:380,w:100},{x:430,y:344,w:100},{x:685,y:380,w:100}];
+const FIGHT_GROUND=440,FIGHT_RADIUS=18,JUMP_SPEED=480;
+
 const gate={x:480,y:112};
 const residents=[
  {name:'Mira',role:'HERBALIST',color:'#c6a4bf',x:320,y:291,route:[[320,291],[438,291],[438,353],[320,353]],step:1,speed:24},
@@ -43,13 +50,13 @@ const woodland=[
  {name:'Ember',role:'SHY FOX',kind:'fox',x:295,y:275,route:[[295,275],[231,335],[320,365]],step:1,speed:24}
 ];
 function nearby(){
- const targets=region==='village'?[{...npc,name:'Rowan',type:'rowan'},{...gate,name:'Forest gate',type:'gate'},...residents.map(r=>({...r,type:'resident'}))]:[{x:480,y:490,name:'Village trail',type:'exit'},...woodland.map(r=>({...r,type:'resident'}))];
+ const targets=region==='village'?[{...npc,name:'Rowan',type:'rowan'},{...gate,name:'Forest gate',type:'gate'},...residents.map(r=>({...r,type:'resident'}))]:[{x:480,y:490,name:'Village trail',type:'exit'},{...swordStone,name:swordOwned?'Empty sword stone':'Sword in the stone',type:'sword'},...woodland.map(r=>({...r,type:'resident'}))];
  return targets.map(t=>({...t,distance:Math.hypot(hero.x-t.x,hero.y-t.y)})).filter(t=>t.distance<78).sort((a,b)=>a.distance-b.distance)[0];
 }
 function refreshWorldUI(){
  ui.location.textContent=region==='village'?'01 / MOSSFALL VILLAGE':'03 / THE WHISPERING WOODS';
- ui.quest.textContent=licensed?(region==='forest'?'Explore the woods · E at the south trail to return':'License earned · North gate unlocked'):'Win Rowan’s trial for a forest license';
- ui.hint.textContent=region==='forest'?'Follow the woodland trail. E to greet wildlife; return south to the village.':licensed?'Your forest license opens the north gate. Press I to inspect it.':'Talk to villagers and greet the animals. Find Rowan at the stone circle.';
+ ui.quest.textContent=licensed?(region==='forest'?(swordOwned?'Mosslight reclaimed · Explore the woods':'Find the sword along the north trail'):'License earned · North gate unlocked'):'Win Rowan’s trial for a forest license';
+ ui.hint.textContent=region==='forest'?(swordOwned?'Mosslight is yours. Inspect it with the sword button or return south.':'A sword rests in a stone along the north trail. Approach and press E.'):licensed?'Your forest license opens the north gate. Press I to inspect it.':'Talk to villagers and greet the animals. Find Rowan at the stone circle.';
 }
 function showLicense(){
  if(!licensed||modal||paused||mode!=='world')return;
@@ -67,6 +74,10 @@ function interact(){
   dialog('NORTH GATE',licensed?'The woods are waiting.':'A license to venture further.',licensed?'The seal on your license matches Rowan’s mark on the gate. A fern-lined trail leads into the Whispering Woods.':'Only licensed travelers may enter. Defeat Rowan in a friendly duel to earn your Forest Venture License.',licensed?[['Enter the forest',enterForest],['Stay in the village',()=>{}]]:[['Find Rowan',()=>{}]]);return;
  }
  if(target.type==='exit'){leaveForest();return}
+ if(target.type==='sword'){
+  if(swordOwned){dialog('THE ANCIENT STONE','Only a quiet stone remains.','The blade is already yours. Mosslight’s warmth lingers in the empty stone.',[['Continue exploring',()=>{}]]);return}
+  dialog('A RELIC OF THE WOODS','A blade beneath the moss.','A silver sword rests in a weathered stone. As you approach, a faint light gathers around its hilt.',[['Pull the sword',startSwordCutscene],['Leave it for now',()=>{}]]);return;
+ }
  if(target.kind){
   const lines={cat:'Pip leans into your hand and purrs. A very good village cat.',chicken:'Clover clucks proudly and pecks at a seed beside your boots.',deer:'Fern pauses in the ferns, then gently sniffs your outstretched hand.',fox:'Ember flicks a bright tail and watches you with curious eyes.'};
   ambientNotice=lines[target.kind];noticeUntil=time+5;ui.hint.textContent=ambientNotice;texts.push({x:target.x,y:target.y-35,t:1.6,value:'♥',color:'#f2b5a4'});return;
@@ -88,8 +99,8 @@ function clearInput(){keys.clear();pressed.clear()}
 function dialog(tag,title,text,actions){document.querySelector('#license-card').hidden=true;clearInput();modal=true;ui['dialog-label'].textContent=tag;ui['dialog-title'].textContent=title;ui['dialog-text'].textContent=text;ui['dialog-actions'].replaceChildren();for(const [name,action]of actions){const b=document.createElement('button');b.textContent=name;b.type='button';if(!ui['dialog-actions'].children.length)b.className='primary';b.onclick=()=>{closeDialog();action()};ui['dialog-actions'].append(b)}ui.overlay.hidden=false;ui['dialog-actions'].firstElementChild.focus()}
 function closeDialog(){modal=false;ui.overlay.hidden=true;clearInput();canvas.focus({preventScroll:true})}
 function talk(){if(mode!=='world'||region!=='village'||modal||paused)return;if(Math.hypot(hero.x-npc.x,hero.y-npc.y)>85){ui.hint.textContent='Get closer to Rowan, beside the stone circle.';return}dialog('ROWAN / CLEARING GUARDIAN',wins?'Back for another round?':'A traveler with a little courage.',wins?'You earned your place in this clearing. Shall we spar again?':'“Earn your Forest Venture License in a friendly duel. Watch my stance, guard my strikes, and choose your moment. Win, and the north gate opens.”',[['Accept the challenge',startFight],['Keep exploring',()=>{}]])}
-function fighter(x,color,face){return{x,y:440,vy:0,hp:100,st:100,color,face,action:null,cool:0,stun:0,flash:0,block:false}}
-function startFight(){mode='fight';player=fighter(280,'#9ed5c2',1);enemy=fighter(680,'#ddab69',-1);roundTime=90;countdown=2;aiClock=.7;particles=[];texts=[];ui.location.textContent='02 / THE STONE RING';ui.quest.textContent='Friendly duel · First knockout wins';ui.hint.textContent='Close the distance. J: strike · K: heavy · Hold L: guard · Space: jump.'}
+function fighter(x,color,face){return{x,y:FIGHT_GROUND,vy:0,hp:100,st:100,color,face,action:null,cool:0,stun:0,flash:0,block:false}}
+function startFight(){mode='fight';player=fighter(315,'#9ed5c2',1);enemy=fighter(645,'#ddab69',-1);roundTime=90;countdown=2;aiClock=.7;particles=[];texts=[];ui.location.textContent='02 / THE STONE RING';ui.quest.textContent='Friendly duel · First knockout wins';ui.hint.textContent='Jump onto crates for high ground. J: strike · K: heavy · L: guard · Space: jump.'}
 function world(){mode='world';region='village';paused=false;hero.x=552;hero.y=325;ui.pause.textContent='Pause';clearInput();refreshWorldUI()}
 function result(){
  const victory=enemy.hp<=0||(roundTime<=0&&player.hp>enemy.hp);
@@ -123,17 +134,69 @@ function updateWorld(dt){
  updateResidents(dt);
  const near=nearby();
  if(time<noticeUntil)ui.hint.textContent=ambientNotice;
- else if(near)ui.hint.textContent=near.kind?`E: greet ${near.name}`:`E: ${near.type==='gate'?(licensed?'enter the forest':'inspect the locked gate'):near.type==='exit'?'return to the village':'talk to '+near.name}`;
+ else if(near)ui.hint.textContent=near.kind?`E: greet ${near.name}`:`E: ${near.type==='gate'?(licensed?'enter the forest':'inspect the locked gate'):near.type==='exit'?'return to the village':near.type==='sword'?(swordOwned?'inspect the empty stone':'inspect the sword'):'talk to '+near.name}`;
  if(tap('e'))interact();else if(tap('i'))showLicense();
 }
 function attack(f,heavy=false){const cost=heavy?27:13;if(f.action||f.cool>0||f.stun>0||f.block||f.st<cost)return;f.st-=cost;f.action={age:0,heavy,hit:false,wind:heavy?.46:.14,end:heavy?.88:.39};f.cool=heavy?1.04:.49}
-function hit(a,b){const ac=a.action;if(!ac||ac.hit||ac.age<ac.wind)return;ac.hit=true;const reach=ac.heavy?112:88;if(Math.abs(a.x-b.x)>reach||Math.abs(a.y-b.y)>65||(b.x-a.x)*a.face<0)return;const guard=b.block&&b.st>0&&b.face===-a.face;const damage=guard?(ac.heavy?5:1):(ac.heavy?22:10);b.hp=Math.max(0,b.hp-damage);if(guard){b.st=Math.max(0,b.st-(ac.heavy?25:13));b.stun=b.st===0?.6:.08}else{b.stun=ac.heavy?.35:.17;b.action=null;b.flash=.16;b.x=clamp(b.x+a.face*(ac.heavy?25:12),45,915)}shake=guard?3:ac.heavy?8:4;texts.push({x:b.x,y:b.y-105,t:.75,value:guard?'GUARD':`−${damage}`,color:guard?'#bcd9e1':'#ffe0a0'});for(let i=0;i<10;i++)particles.push({x:(a.x+b.x)/2,y:b.y-48,vx:(Math.random()-.5)*200,vy:-Math.random()*180,t:.4,c:guard?'#b5ddd7':'#ffd382'})}
-function tickFighter(f,dt){f.cool=Math.max(0,f.cool-dt);f.stun=Math.max(0,f.stun-dt);f.flash=Math.max(0,f.flash-dt);f.st=clamp(f.st+dt*(f.block?3:f.action?6:22),0,100);if(f.action){f.action.age+=dt;if(f.action.age>f.action.end)f.action=null}f.vy+=1000*dt;f.y+=f.vy*dt;if(f.y>=440){f.y=440;f.vy=0}}
-function updateFight(dt){if(countdown>0){countdown-=dt;return}roundTime=Math.max(0,roundTime-dt);tickFighter(player,dt);tickFighter(enemy,dt);player.face=enemy.x>=player.x?1:-1;enemy.face=-player.face;player.block=down('l')&&!player.action&&player.stun<=0&&player.y>=439&&player.st>0;if(!player.action&&player.stun<=0){if(!player.block){let move=Number(down('d','arrowright'))-Number(down('a','arrowleft'));player.x=clamp(player.x+move*235*dt,45,915);if(tap(' ','w','arrowup')&&player.y>=439)player.vy=-445}if(tap('j'))attack(player);else if(tap('k'))attack(player,true)}
-aiClock-=dt;if(aiClock<=0){aiChoice=Math.random();aiClock=.35+Math.random()*.5}const dist=Math.abs(player.x-enemy.x);enemy.block=!enemy.action&&enemy.stun<=0&&enemy.st>12&&dist<140&&!!player.action&&aiChoice<.44;if(!enemy.action&&!enemy.block&&enemy.stun<=0){if(dist>78)enemy.x=clamp(enemy.x+enemy.face*135*dt,45,915);else if(enemy.cool<=0)attack(enemy,aiChoice>.5&&enemy.st>=27)}
-// Fighters cannot occupy the same ground position; airborne crossing is allowed.
-if(Math.abs(player.y-enemy.y)<65&&Math.abs(player.x-enemy.x)<45){const mid=(player.x+enemy.x)/2;player.x=clamp(mid-player.face*22.5,45,915);enemy.x=clamp(mid+player.face*22.5,45,915)}
-hit(player,enemy);hit(enemy,player);if(player.hp<=0||enemy.hp<=0||roundTime<=0)result()}
+function hit(a,b){const ac=a.action;if(!ac||ac.hit||ac.age<ac.wind)return;ac.hit=true;const reach=ac.heavy?112:88;if(Math.abs(a.x-b.x)>reach||Math.abs(a.y-b.y)>65||(b.x-a.x)*a.face<0)return;const guard=b.block&&b.st>0&&b.face===-a.face;const damage=guard?(ac.heavy?5:1):(ac.heavy?22:10);b.hp=Math.max(0,b.hp-damage);if(guard){b.st=Math.max(0,b.st-(ac.heavy?25:13));b.stun=b.st===0?.6:.08}else{b.stun=ac.heavy?.35:.17;b.action=null;b.flash=.16;moveFighter(b,a.face*(ac.heavy?25:12))}shake=guard?3:ac.heavy?8:4;texts.push({x:b.x,y:b.y-105,t:.75,value:guard?'GUARD':`−${damage}`,color:guard?'#bcd9e1':'#ffe0a0'});for(let i=0;i<10;i++)particles.push({x:(a.x+b.x)/2,y:b.y-48,vx:(Math.random()-.5)*200,vy:-Math.random()*180,t:.4,c:guard?'#b5ddd7':'#ffd382'})}
+// Solid crate sides and downward landing share the same collision geometry.
+function overPlatform(f,p){return f.x+FIGHT_RADIUS>p.x&&f.x-FIGHT_RADIUS<p.x+p.w}
+function isGrounded(f){return f.vy===0&&(f.y===FIGHT_GROUND||platforms.some(p=>overPlatform(f,p)&&Math.abs(f.y-p.y)<.01))}
+function moveFighter(f,dx){
+ let x=clamp(f.x+dx,45,915);
+ for(const p of platforms){
+  if(f.y<=p.y+.01||f.y-96>=FIGHT_GROUND)continue;
+  if(dx>0&&f.x+FIGHT_RADIUS<=p.x+.01&&x+FIGHT_RADIUS>p.x)x=Math.min(x,p.x-FIGHT_RADIUS);
+  if(dx<0&&f.x-FIGHT_RADIUS>=p.x+p.w-.01&&x-FIGHT_RADIUS<p.x+p.w)x=Math.max(x,p.x+p.w+FIGHT_RADIUS);
+ }
+ f.x=x;
+}
+function tickFighter(f,dt){
+ f.cool=Math.max(0,f.cool-dt);f.stun=Math.max(0,f.stun-dt);f.flash=Math.max(0,f.flash-dt);
+ f.st=clamp(f.st+dt*(f.block?3:f.action?6:22),0,100);
+ if(f.action){f.action.age+=dt;if(f.action.age>f.action.end)f.action=null}
+ const oldY=f.y;
+ f.vy+=1000*dt;f.y+=f.vy*dt;
+ if(f.vy>=0){
+  let floor=FIGHT_GROUND;
+  for(const p of platforms)if(overPlatform(f,p)&&oldY<=p.y+.01&&f.y>=p.y)floor=Math.min(floor,p.y);
+  if(f.y>=floor){f.y=floor;f.vy=0}
+ }
+}
+function updateFight(dt){
+ if(countdown>0){countdown-=dt;return}
+ roundTime=Math.max(0,roundTime-dt);
+ tickFighter(player,dt);tickFighter(enemy,dt);
+ player.face=enemy.x>=player.x?1:-1;enemy.face=-player.face;
+ player.block=down('l')&&!player.action&&player.stun<=0&&isGrounded(player)&&player.st>0;
+ if(!player.action&&player.stun<=0){
+  if(!player.block){
+   const move=Number(down('d','arrowright'))-Number(down('a','arrowleft'));
+   moveFighter(player,move*235*dt);
+   if(tap(' ','w','arrowup')&&isGrounded(player))player.vy=-JUMP_SPEED;
+  }
+  if(tap('j'))attack(player);else if(tap('k'))attack(player,true);
+ }
+ aiClock-=dt;
+ if(aiClock<=0){aiChoice=Math.random();aiClock=.35+Math.random()*.5}
+ const dist=Math.abs(player.x-enemy.x),height=Math.abs(player.y-enemy.y);
+ enemy.block=!enemy.action&&enemy.stun<=0&&enemy.st>12&&isGrounded(enemy)&&dist<140&&height<65&&!!player.action&&aiChoice<.44;
+ if(!enemy.action&&!enemy.block&&enemy.stun<=0){
+  const stepAhead=enemy.x+enemy.face*38;
+  const wall=platforms.some(p=>enemy.y>p.y+.01&&stepAhead+FIGHT_RADIUS>p.x&&stepAhead-FIGHT_RADIUS<p.x+p.w);
+  if(isGrounded(enemy)&&(wall||(player.y<enemy.y-30&&dist<180)))enemy.vy=-JUMP_SPEED;
+  if(dist>62||height>65)moveFighter(enemy,enemy.face*160*dt);
+  else if(enemy.cool<=0)attack(enemy,aiChoice>.5&&enemy.st>=27);
+ }
+ // Separate fighters through normal movement so knockback cannot push them inside crates.
+ if(Math.abs(player.y-enemy.y)<65&&Math.abs(player.x-enemy.x)<45){
+  const overlap=45-Math.abs(player.x-enemy.x);
+  moveFighter(player,-player.face*overlap/2);moveFighter(enemy,player.face*overlap/2);
+ }
+ hit(player,enemy);hit(enemy,player);
+ if(player.hp<=0||enemy.hp<=0||roundTime<=0)result();
+}
+
 function tree(x,y,s=1,birch=false){
  ellipse(x+13*s,y+16*s,33*s,10*s,'#112b2444');
  rect(x-7*s,y-36*s,14*s,60*s,birch?'#c9cfb6':'#67503b');rect(x+2*s,y-30*s,5*s,53*s,birch?'#99ac9a':'#433e2e');
@@ -154,7 +217,7 @@ function house(o){
  rect(x+w/2-17,y+h-48,34,40,'#53614c');rect(x+w/2-12,y+h-44,24,35,'#3d4e3d');circle(x+w/2+8,y+h-25,2,'#e5c578');rect(x+w/2-22,y+h-8,44,8,'#b8b39b');
  for(const xx of [x+24,x+w-48]){rect(xx-4,y+30,31,28,'#726349');rect(xx,y+34,23,20,'#d6ca88');rect(xx+10,y+34,3,20,'#8a8761');rect(xx,y+42,23,3,'#8a8761');rect(xx-5,y+60,34,6,'#6b7250');for(let k=0;k<5;k++)circle(xx+k*5,y+58,3,k%2?'#e4b586':'#a9b77b')}
 }
-function littlePerson(x,y,color,hat=false){ellipse(x,y+5,15,6,'#10291b66');rect(x-9,y-11,7,17,'#343d38');rect(x+3,y-11,7,17,'#343d38');rect(x-12,y-34,24,26,color);rect(x-17,y-30,6,18,'#bb9772');rect(x+11,y-30,6,18,'#bb9772');rect(x-9,y-50,18,19,'#d9b68b');rect(x-10,y-52,20,7,hat?'#d9b56a':'#3a3e32');if(hat){rect(x-15,y-47,30,5,'#d9b56a');rect(x+16,y-30,4,40,'#bba57c')}rect(x-5,y-41,3,3,'#233629');rect(x+4,y-41,3,3,'#233629')}
+function littlePerson(x,y,color,hat=false,arms=true){ellipse(x,y+5,15,6,'#10291b66');rect(x-9,y-11,7,17,'#343d38');rect(x+3,y-11,7,17,'#343d38');rect(x-12,y-34,24,26,color);if(arms){rect(x-17,y-30,6,18,'#bb9772');rect(x+11,y-30,6,18,'#bb9772');}rect(x-9,y-50,18,19,'#d9b68b');rect(x-10,y-52,20,7,hat?'#d9b56a':'#3a3e32');if(hat){rect(x-15,y-47,30,5,'#d9b56a');rect(x+16,y-30,4,40,'#bba57c')}rect(x-5,y-41,3,3,'#233629');rect(x+4,y-41,3,3,'#233629')}
 // Scenery stays procedural and self-contained, including all animated details.
 function path(points,width,color){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke()}
 function flower(x,y,c){rect(x,y-5,2,7,'#547149');circle(x,y-6,3,c);circle(x,y-6,1,'#edd490')}
@@ -181,7 +244,7 @@ function ambient(){
  const light=ctx.createRadialGradient(590,130,10,590,130,520);light.addColorStop(0,'#efda9a12');light.addColorStop(1,'#102d2b22');ctx.fillStyle=light;ctx.fillRect(0,0,960,540);
 }
 function worldPrompt(){
- const target=nearby();if(target){const text=target.kind?'[E] Greet '+target.name:target.type==='gate'?'[E] Forest gate':target.type==='exit'?'[E] Village':'[E] '+target.name;const w=text.length*7+20,x=clamp(target.x,w/2+4,956-w/2),y=Math.max(110,target.y-80);rect(x-w/2,y-19,w,28,'#172b23ed');label(text,x,y,12,'#f3ddaa')}
+ if(mode==='cutscene')return;const target=nearby();if(target){const text=target.kind?'[E] Greet '+target.name:target.type==='gate'?'[E] Forest gate':target.type==='exit'?'[E] Village':target.type==='sword'?'[E] '+(swordOwned?'Empty stone':'Sword in stone'):'[E] '+target.name;const w=text.length*7+20,x=clamp(target.x,w/2+4,956-w/2),y=Math.max(110,target.y-80);rect(x-w/2,y-19,w,28,'#172b23ed');label(text,x,y,12,'#f3ddaa')}
  rect(18,18,238,48,'#17271fdc');label(region==='forest'?'WHISPERING WOODS':'MOSSFALL VILLAGE',32,39,12,'#e4d9b6','left');label(licensed?'FOREST LICENSE · APPROVED':'Win the trial. Earn your license.',32,56,10,'#c0d2a6','left');
 }
 function drawVillage(){
@@ -199,7 +262,7 @@ function drawVillage(){
  const decorations=[];
  for(let i=0;i<13;i++){if(i<5||i>7){const x=i*80+8,y=57+(i%3)*16;decorations.push({y:y+20,draw:()=>tree(x,y,.9,i%4===0)})}if(i<4||i>9){const x=i*80,y=530;decorations.push({y:y+20,draw:()=>tree(x,y,.8)})}}
  for(const o of obstacles)decorations.push({y:o.y+o.h,draw:()=>house(o)});
- decorations.push({y:hero.y,draw:()=>littlePerson(hero.x,hero.y,'#9ed5c2')},{y:npc.y,draw:()=>littlePerson(npc.x,npc.y,'#b99459',true)});
+ decorations.push({y:hero.y,draw:drawHero},{y:npc.y,draw:()=>littlePerson(npc.x,npc.y,'#b99459',true)});
  for(const r of residents)decorations.push({y:r.y,draw:()=>r.kind?animal(r):littlePerson(r.x,r.y+Math.sin(time*5)*1.2,r.color)});
  decorations.sort((a,b)=>a.y-b.y).forEach(o=>o.draw());
  label('ROWAN',npc.x,npc.y-70,11,'#ffe1a0');
@@ -214,17 +277,97 @@ function drawForest(){
  const items=[];
  for(let i=0;i<21;i++){const x=(i*157+38)%960,y=75+(i*113)%440;if(x>365&&x<570&&y>140)continue;items.push({y:y+24,draw:()=>tree(x,y,1.0+(i%3)*.15,i%3===0)})}
  for(const r of woodland)items.push({y:r.y,draw:()=>animal(r)});
- items.push({y:hero.y,draw:()=>littlePerson(hero.x,hero.y,'#9ed5c2')});items.sort((a,b)=>a.y-b.y).forEach(o=>o.draw());
+ items.push({y:swordStone.y,draw:drawSwordStone});if(mode!=='cutscene')items.push({y:hero.y,draw:drawHero});items.sort((a,b)=>a.y-b.y).forEach(o=>o.draw());
  rect(440,484,80,22,'#213f30');label('↓ VILLAGE',480,499,11,'#ead7a5');
  ambient();worldPrompt();
 }
 function drawWorld(){if(region==='forest')drawForest();else drawVillage()}
 
 function bar(x,y,w,value,color){rect(x,y,w,12,'#14231f');rect(x+2,y+2,(w-4)*value/100,8,color)}
-function drawFighter(f,name){const attacking=f.action&&f.action.age>=f.action.wind&&f.action.age<f.action.wind+.16;const charging=f.action&&f.action.heavy&&f.action.age<f.action.wind;ellipse(f.x,445,28,8,'#0b1d2066');ctx.save();ctx.translate(Math.round(f.x),Math.round(f.y));ctx.scale(f.face,1);if(charging){circle(0,-45,46,'#e6bd6133');label('!',0,-107,26,'#ffda7e')}const bob=f.y===440&&!f.action?Math.sin(time*5)*2:0;ctx.translate(0,bob);rect(-20,-30,14,30,'#344541');rect(9,-30,14,30,'#344541');rect(-23,-5,20,7,'#242f30');rect(8,-5,23,7,'#242f30');rect(-23,-73,46,47,f.flash>0?'#fff3c2':f.color);rect(-26,-38,52,8,'#71634c');rect(-13,-98,26,27,'#dab58c');rect(-15,-101,30,10,name==='ROWAN'?'#c3a269':'#344339');rect(6,-87,4,4,'#28382f');rect(-31,-67,10,31,'#bc9570');if(f.block){rect(23,-78,12,40,'#c3d7be');rect(35,-77,5,39,'#8ea6a0');ctx.strokeStyle='#c6e6de';ctx.lineWidth=3;ctx.beginPath();ctx.arc(22,-56,38,-1.25,1.25);ctx.stroke()}else if(attacking){rect(20,-67,55,12,'#d9b58c');rect(70,-71,14,18,f.action.heavy?'#ffe0a0':'#e4c79c');ctx.strokeStyle=f.action.heavy?'#ffd47f':'#d9f2db';ctx.lineWidth=5;ctx.beginPath();ctx.arc(22,-55,f.action.heavy?83:65,-1.1,.7);ctx.stroke()}else{rect(23,-67,12,25,'#bc9570');rect(26,-77,14,16,'#e0be92')}ctx.restore()}
-function drawFight(){const sky=ctx.createLinearGradient(0,0,0,540);sky.addColorStop(0,'#233b42');sky.addColorStop(1,'#68806b');ctx.fillStyle=sky;ctx.fillRect(0,0,960,540);circle(720,125,54,'#d8c99a');for(let i=0;i<15;i++)tree(i*77,300+(i%3)*20,1.8);rect(0,357,960,183,'#536b4b');ellipse(480,447,435,74,'#b1a17c');ellipse(480,447,400,57,'#a29470');for(let i=0;i<18;i++){const a=i/18*Math.PI*2;rect(472+Math.cos(a)*426,443+Math.sin(a)*70,19,12,'#77816b')}for(const x of [110,850]){rect(x,284,12,106,'#646c5b');rect(x-5,280,22,13,'#b6b093');circle(x+6,269,8+Math.sin(time*12)*2,'#e5b66a');circle(x+6,265,4,'#ffe1a0')}for(const f of [player,enemy].sort((a,b)=>a.y-b.y))drawFighter(f,f===player?'YOU':'ROWAN');rect(22,18,352,72,'#14251fe8');rect(586,18,352,72,'#14251fe8');label('TRAVELER',36,38,12,'#dcebd7','left');label('ROWAN / GUARDIAN',600,38,12,'#e8c691','left');bar(36,47,324,player.hp,'#9ccf9f');bar(600,47,324,enemy.hp,'#d6a064');bar(36,66,324,player.st,'#83b9c0');bar(600,66,324,enemy.st,'#83b9c0');label(Math.ceil(roundTime).toString().padStart(2,'0'),480,52,30);label('HP / STAMINA',480,75,9,'#d3d5ba');if(countdown>0){label(countdown>1?'READY':'DUEL!',480,230,48,'#f8e4af');label('Watch. Guard. Strike.',480,263,15,'#dbe8d4')}else if(enemy.action?.heavy&&enemy.action.age<enemy.action.wind){label('HEAVY STRIKE — GUARD OR JUMP',480,135,14,'#ffe1a0')}label('J STRIKE   K HEAVY   L GUARD   SPACE JUMP',480,520,12,'#e2debb')}
-function draw(){ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake)}if(mode==='world')drawWorld();else drawFight();for(const p of particles)rect(p.x,p.y,4,4,p.c);for(const t of texts)label(t.value,t.x,t.y,16,t.color);ctx.restore()}
-function frame(ms){const dt=Math.min((ms-last)/1000||0,.034);last=ms;if(!paused&&!modal){time+=dt;if(mode==='world')updateWorld(dt);else if(mode==='fight')updateFight(dt);shake=Math.max(0,shake-dt*35);for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.t-=dt}particles=particles.filter(p=>p.t>0);for(const t of texts){t.y-=dt*35;t.t-=dt}texts=texts.filter(t=>t.t>0)}pressed.clear();draw();requestAnimationFrame(frame)}
+function drawFighter(f,name){const attacking=f.action&&f.action.age>=f.action.wind&&f.action.age<f.action.wind+.16;const charging=f.action&&f.action.heavy&&f.action.age<f.action.wind;ellipse(f.x,isGrounded(f)?f.y+5:445,28,8,'#0b1d2066');ctx.save();ctx.translate(Math.round(f.x),Math.round(f.y));ctx.scale(f.face,1);if(charging){circle(0,-45,46,'#e6bd6133');label('!',0,-107,26,'#ffda7e')}const bob=isGrounded(f)&&!f.action?Math.sin(time*5)*2:0;ctx.translate(0,bob);rect(-20,-30,14,30,'#344541');rect(9,-30,14,30,'#344541');rect(-23,-5,20,7,'#242f30');rect(8,-5,23,7,'#242f30');rect(-23,-73,46,47,f.flash>0?'#fff3c2':f.color);rect(-26,-38,52,8,'#71634c');rect(-13,-98,26,27,'#dab58c');rect(-15,-101,30,10,name==='ROWAN'?'#c3a269':'#344339');rect(6,-87,4,4,'#28382f');rect(-31,-67,10,31,'#bc9570');if(f.block){rect(23,-78,12,40,'#c3d7be');rect(35,-77,5,39,'#8ea6a0');ctx.strokeStyle='#c6e6de';ctx.lineWidth=3;ctx.beginPath();ctx.arc(22,-56,38,-1.25,1.25);ctx.stroke()}else if(attacking){rect(20,-67,55,12,'#d9b58c');rect(70,-71,14,18,f.action.heavy?'#ffe0a0':'#e4c79c');ctx.strokeStyle=f.action.heavy?'#ffd47f':'#d9f2db';ctx.lineWidth=5;ctx.beginPath();ctx.arc(22,-55,f.action.heavy?83:65,-1.1,.7);ctx.stroke()}else{rect(23,-67,12,25,'#bc9570');rect(26,-77,14,16,'#e0be92')}ctx.restore()}
+function drawFight(){const sky=ctx.createLinearGradient(0,0,0,540);sky.addColorStop(0,'#233b42');sky.addColorStop(1,'#68806b');ctx.fillStyle=sky;ctx.fillRect(0,0,960,540);circle(720,125,54,'#d8c99a');for(let i=0;i<15;i++)tree(i*77,300+(i%3)*20,1.8);rect(0,357,960,183,'#536b4b');ellipse(480,447,435,74,'#b1a17c');ellipse(480,447,400,57,'#a29470');for(let i=0;i<18;i++){const a=i/18*Math.PI*2;rect(472+Math.cos(a)*426,443+Math.sin(a)*70,19,12,'#77816b')}for(const x of [110,850]){rect(x,284,12,106,'#646c5b');rect(x-5,280,22,13,'#b6b093');circle(x+6,269,8+Math.sin(time*12)*2,'#e5b66a');circle(x+6,265,4,'#ffe1a0')}for(const p of platforms)drawCrate(p);for(const f of [player,enemy].sort((a,b)=>a.y-b.y))drawFighter(f,f===player?'YOU':'ROWAN');rect(22,18,352,72,'#14251fe8');rect(586,18,352,72,'#14251fe8');label('TRAVELER',36,38,12,'#dcebd7','left');label('ROWAN / GUARDIAN',600,38,12,'#e8c691','left');bar(36,47,324,player.hp,'#9ccf9f');bar(600,47,324,enemy.hp,'#d6a064');bar(36,66,324,player.st,'#83b9c0');bar(600,66,324,enemy.st,'#83b9c0');label(Math.ceil(roundTime).toString().padStart(2,'0'),480,52,30);label('HP / STAMINA',480,75,9,'#d3d5ba');if(countdown>0){label(countdown>1?'READY':'DUEL!',480,230,48,'#f8e4af');label('Watch. Guard. Strike.',480,263,15,'#dbe8d4')}else if(enemy.action?.heavy&&enemy.action.age<enemy.action.wind){label('HEAVY STRIKE — GUARD OR JUMP',480,135,14,'#ffe1a0')}label('J STRIKE   K HEAVY   L GUARD   SPACE JUMP ON BOXES',480,520,12,'#e2debb')}
+function draw(){ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake)}if(mode==='world')drawWorld();else if(mode==='cutscene')drawSwordCutscene();else drawFight();for(const p of particles)rect(p.x,p.y,4,4,p.c);for(const t of texts)label(t.value,t.x,t.y,16,t.color);ctx.restore()}
+function frame(ms){const dt=Math.min((ms-last)/1000||0,.034);last=ms;if(!paused&&!modal){time+=dt;if(mode==='world')updateWorld(dt);else if(mode==='fight')updateFight(dt);else if(mode==='cutscene')updateSwordCutscene(dt);shake=Math.max(0,shake-dt*35);for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.t-=dt}particles=particles.filter(p=>p.t>0);for(const t of texts){t.y-=dt*35;t.t-=dt}texts=texts.filter(t=>t.t>0)}pressed.clear();draw();requestAnimationFrame(frame)}
+// Forest relic: animation time advances only while the game is unpaused.
+function startSwordCutscene(){
+ if(swordOwned||!licensed||region!=='forest'||mode!=='world')return;
+ clearInput();mode='cutscene';cutscene={elapsed:0,startX:hero.x,startY:hero.y,caption:''};
+ document.querySelector('#cinematic').hidden=false;ui.quest.textContent='Mosslight · The ancient blade';
+ ui.hint.textContent='A moment in the woods. Escape pauses; Skip cutscene completes the scene.';
+ setCutsceneCaption('The forest grows still. A light stirs inside the stone.');
+}
+function setCutsceneCaption(text){if(cutscene.caption!==text){cutscene.caption=text;document.querySelector('#cutscene-caption').textContent=text}}
+function updateSwordCutscene(dt){
+ cutscene.elapsed+=dt;const t=cutscene.elapsed;
+ const walk=clamp(t/1.25,0,1),ease=walk*walk*(3-2*walk);
+ hero.x=cutscene.startX+(swordStone.x-cutscene.startX)*ease;
+ hero.y=cutscene.startY+(swordStone.y+14-cutscene.startY)*ease;
+ if(t<1.25)setCutsceneCaption('The forest grows still. A light stirs inside the stone.');
+ else if(t<3)setCutsceneCaption('You grip the hilt. The roots hold fast…');
+ else if(t<4.2)setCutsceneCaption('One last pull — and the ancient seal breaks.');
+ else setCutsceneCaption('Mosslight answers. The woods remember their champion.');
+ if(t>=3&&t<4.2)shake=2;
+ if(t>=6.6)finishSwordCutscene();
+}
+function finishSwordCutscene(){
+ if(mode!=='cutscene'||modal)return;
+ clearInput();swordOwned=true;mode='world';cutscene=null;shake=0;
+ hero.x=swordStone.x;hero.y=swordStone.y+52;
+ document.querySelector('#cinematic').hidden=true;document.querySelector('#sword-inventory').hidden=false;
+ refreshWorldUI();
+ dialog('RELIC ACQUIRED','Mosslight awakens.','You pulled the ancient sword from its stone. Its blade catches the light of the forest. Carry it on your travels; Rowan’s friendly duels remain unarmed.',[['Continue exploring',()=>{}]]);
+}
+function drawBlade(x,y,scale=1,angle=0){
+ ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.scale(scale,scale);
+ // Origin is the grip, with the blade pointing downward.
+ rect(-4,-10,8,22,'#5a6658');rect(-3,-9,3,21,'#90a990');circle(0,-13,5,'#e2c17d');
+ rect(-16,10,32,5,'#d4ba76');rect(-3,15,6,32,'#e5f6df');rect(3,15,3,29,'#8fbdb6');
+ ctx.fillStyle='#d7eee0';ctx.beginPath();ctx.moveTo(-3,47);ctx.lineTo(6,44);ctx.lineTo(0,54);ctx.fill();ctx.restore();
+}
+function drawHero(){
+ littlePerson(hero.x,hero.y,'#9ed5c2');
+ if(swordOwned)drawBlade(hero.x+17,hero.y-32,.65,-.35);
+}
+function drawSwordStone(){
+ const {x,y}=swordStone;
+ ellipse(x,y+7,43,15,'#15392b77');
+ ellipse(x,y-7,37,24,'#677f74');ellipse(x-7,y-16,30,18,'#95a795');
+ path([[x-29,y-11],[x-7,y-27],[x+19,y-23],[x+31,y-6],[x+22,y+6],[x-24,y+9]],3,'#afbaa0');
+ path([[x-8,y-22],[x+1,y-12],[x-3,y-1]],2,'#4c645b');
+ for(let i=0;i<5;i++)ellipse(x-24+i*11,y+6+Math.sin(i)*3,5,3,'#758f58');
+ if(!swordOwned){
+  const glow=ctx.createRadialGradient(x,y-38,1,x,y-38,63);glow.addColorStop(0,'#e8df8d33');glow.addColorStop(1,'#e8df8d00');ctx.fillStyle=glow;ctx.fillRect(x-65,y-103,130,130);
+  if(mode!=='cutscene')drawBlade(x,y-49,.75);
+ }
+}
+function drawSwordCutscene(){
+ const t=cutscene.elapsed,{x,y}=swordStone;
+ ctx.save();ctx.translate(480,270);ctx.scale(1.3,1.3);ctx.translate(-x,-(y+6));drawForest();
+ const strain=t>1.25&&t<3?Math.sin(t*27)*1.3:0;
+ const lift=clamp((t-3)/1.2,0,1),poseY=hero.y-lift*12;
+ littlePerson(hero.x+strain,poseY,'#9ed5c2',false,t<1.25);
+ if(t>=1.25){
+  const celebration=clamp((t-4.2)/.35,0,1);
+  const gripY=y-49-lift*20+(poseY-65-(y-69))*celebration;
+  path([[hero.x-14,poseY-30],[hero.x-20,poseY-54],[x-5+strain,gripY+4]],5,'#d9b68b');
+  path([[hero.x+14,poseY-30],[hero.x+20,poseY-54],[x+5+strain,gripY+4]],5,'#d9b68b');
+  drawBlade(x+strain,gripY,.75,clamp((t-4.05)/.4,0,1)*Math.PI);
+ }else drawBlade(x,y-49,.75);
+
+ if(t>2){const glow=clamp((t-2)/2,0,1);for(let i=0;i<24;i++){const a=i*Math.PI*2/24+t*.3,r=20+((t*35+i*7)%100);circle(x+Math.cos(a)*r,y-40+Math.sin(a)*r*.7,1.5,'#e8edb5'+Math.round(glow*180).toString(16).padStart(2,'0'))}}
+ ctx.restore();rect(0,0,960,22,'#0c1d18');rect(0,518,960,22,'#0c1d18');
+ if(t>=3&&t<3.35){ctx.fillStyle=`rgba(255,242,187,${(1-(t-3)/.35)*.35})`;ctx.fillRect(0,0,960,540)}
+}
+function drawCrate(p){
+ const h=FIGHT_GROUND-p.y;
+ ellipse(p.x+p.w/2,445,p.w*.58,9,'#18362c55');rect(p.x,p.y,p.w,h,'#75553c');
+ for(let i=0;i<4;i++)rect(p.x+5+i*(p.w-10)/4,p.y+5,(p.w-10)/4-3,h-9,i%2?'#b48c59':'#a37c4d');
+ rect(p.x,p.y,p.w,7,'#dfbd7e');rect(p.x,p.y+7,5,h-7,'#6d5239');rect(p.x+p.w-5,p.y+7,5,h-7,'#6d5239');
+ path([[p.x+8,p.y+h-7],[p.x+p.w-8,p.y+12]],7,'#d0a76d');
+ for(const xx of [p.x+9,p.x+p.w-10])for(const yy of [p.y+12,FIGHT_GROUND-9])circle(xx,yy,2,'#4e5141');
+}
+document.querySelector('#skip-cutscene').onclick=finishSwordCutscene;
+document.querySelector('#sword-inventory').onclick=()=>{if(mode!=='world'||modal||paused)return;dialog('YOUR RELIC','Mosslight, the forest blade.','Freed from the ancient stone by your own hand. You carry the sword while exploring. Friendly training duels with Rowan remain unarmed.',[['Continue exploring',()=>{}]])};
 refreshWorldUI();
 requestAnimationFrame(frame);
 </script>
