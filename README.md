@@ -4,21 +4,17 @@ A small, single-player RPG and fighting game built entirely with HTML, CSS, and 
 
 ![Mossfall village](screenshots/village.png)
 
+**[Play Mossfall in your browser](https://orw-10.github.io/mossfall/)**
+
 ## Play locally
 
 Download or clone this repository and open `index.html` in a modern browser. No build, installation, server, database, API keys, or internet connection is required. The game, styles, and procedural artwork are contained in one HTML file.
 
-## Play from a repository link
+## Play online
 
-GitHub Pages can host this game directly. GitHub currently rejects Pages for this private repository on the owner's plan, so there is no live game link yet. Viewing `index.html` on GitHub shows its source rather than running the game.
+**[Play Mossfall](https://orw-10.github.io/mossfall/)** — no installation or account required.
 
-To enable hosting, use a plan that supports Pages for private repositories, or make this repository public. In **Settings → Pages**, select **Deploy from a branch**, choose **main** and **/ (root)**, and save. The repository includes `.nojekyll` for static hosting. Pages serves static files only; the game still runs entirely in the player's browser.
-
-After Pages reports a successful deployment, the expected address is `https://orw-10.github.io/mossfall/`. Add a prominent README hyperlink using:
-
-```markdown
-[Play Mossfall](https://orw-10.github.io/mossfall/)
-```
+The game is hosted with GitHub Pages from `main` at the repository root. Updates pushed to `main` deploy automatically. Pages serves static files; gameplay runs entirely in your browser, with no backend, database, or API keys. You can also download `index.html` to play offline.
 
 ## Controls
 
